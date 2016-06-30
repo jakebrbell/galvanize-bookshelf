@@ -8,6 +8,20 @@ const knex = require('../knex');
 router.post('/users', (req, res, next) => {
   const newUser = req.body;
 
+  if (!newUser.first_name || newUser.first_name.trim() === '') {
+    return res
+      .status(400)
+      .set('Content-Type', 'text/plain')
+      .send('First name must not be blank');
+  }
+
+  if (!newUser.last_name || newUser.last_name.trim() === '') {
+    return res
+      .status(400)
+      .set('Content-Type', 'text/plain')
+      .send('Last name must not be blank');
+  }
+
   if (!newUser.email || newUser.email.trim() === '') {
     return res
       .status(400)
@@ -23,9 +37,11 @@ router.post('/users', (req, res, next) => {
   }
 
   knex('users')
+    .select(knex.raw('1=1'))
     .where('email', newUser.email)
-    .then((users) => {
-      if (users.length !== 0) {
+    .first()
+    .then((exists) => {
+      if (exists) {
         return res
           .status(400)
           .set('Content-Type', 'text/plain')
@@ -43,11 +59,14 @@ router.post('/users', (req, res, next) => {
             last_name: newUser.last_name,
             email: newUser.email,
             hashed_password
-          })
+          }, '*')
           .then((users) => {
             res.sendStatus(200);
+          })
+          .catch((err) => {
+            next(err);
           });
-      })
+      });
     })
     .catch((err) => {
       next(err);
