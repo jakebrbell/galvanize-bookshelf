@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Create a web application to manage your book collection",
   "scripts": {
-    "test": "mocha",
+    "heroku-postbuild": "knex migrate:latest",
     "knex": "knex",
+    "nf": "nf start",
     "nodemon": "nodemon server.js",
-    "heroku-postbuild": "knex migrate:latest"
+    "test": "mocha"
   },
   "license": "MIT",
   "dependencies": {
