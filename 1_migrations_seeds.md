@@ -29,6 +29,12 @@ And, update the `knexfile.js` file with the connection information for the devel
 'postgres://localhost/bookshelf_test'
 ```
 
+Then, generate a secret key that'll be used to sign session information. You'll learn about sessions and why they're signed soon.
+
+```shell
+bash -c 'echo "SESSION_SECRET="$(openssl rand -hex 64)' > .env
+```
+
 Finally, ensure the test suite can connect to the right database.
 
 ```shell
